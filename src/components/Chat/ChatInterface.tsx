@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Mic, Image, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -75,7 +74,6 @@ const ChatInterface = () => {
     }, 1500);
   };
 
-  // Simple mock AI responses based on user input and selected county
   const getAIResponse = (userInput: string, county: string): string => {
     const input = userInput.toLowerCase();
     
@@ -108,19 +106,9 @@ const ChatInterface = () => {
   };
 
   return (
-    <div 
-      className="flex flex-col h-full rounded-xl overflow-hidden border border-border relative"
-      style={{
-        backgroundImage: `url(${countyInfo.backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
-      
+    <div className="flex flex-col h-full rounded-xl border border-border relative bg-white/50 backdrop-blur-sm shadow-sm">
       {/* Messages container */}
-      <div className="flex-1 p-4 overflow-y-auto relative z-10">
+      <div className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-4">
           {messages.map((message) => (
             <div 
@@ -166,7 +154,7 @@ const ChatInterface = () => {
       </div>
 
       {/* Input area */}
-      <div className="p-4 bg-white/50 backdrop-blur-sm border-t border-gray-100 relative z-10">
+      <div className="p-4 bg-white/70 backdrop-blur-sm border-t border-gray-100">
         <div className="flex items-center space-x-2">
           <div className="relative flex-1">
             <textarea

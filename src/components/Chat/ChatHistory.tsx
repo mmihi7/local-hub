@@ -11,16 +11,16 @@ const ChatHistory = () => {
   }
 
   return (
-    <div className="rounded-xl border border-border p-4 bg-white shadow-sm">
-      <h3 className="font-medium mb-3 flex items-center gap-2">
-        <Clock className="w-4 h-4" />
+    <div className="rounded-xl border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm">
+      <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+        <Clock className="w-3 h-3" />
         <span>Recent Conversations</span>
       </h3>
-      <ul className="space-y-2">
+      <ul className="space-y-1.5">
         {chatHistory.map((message, index) => (
           <li 
             key={index} 
-            className="text-sm text-foreground/80 hover:text-foreground cursor-pointer hover:underline truncate"
+            className="text-xs text-foreground/80 hover:text-foreground cursor-pointer hover:underline truncate"
           >
             {message}
           </li>
