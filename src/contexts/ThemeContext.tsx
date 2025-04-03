@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type CountyType = 'kakamega' | 'nairobi' | 'mombasa';
@@ -10,7 +11,8 @@ interface CountyInfo {
   coordinates: [number, number]; // [longitude, latitude]
 }
 
-const defaultCounties: Record<string, CountyInfo> = {
+// Export the counties object so it can be used in other components
+export const counties: Record<CountyType, CountyInfo> = {
   kakamega: {
     id: 'kakamega',
     displayName: 'Kakamega County',
@@ -99,7 +101,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     <ThemeContext.Provider value={{ 
       county, 
       setCounty, 
-      countyInfo: defaultCounties[county],
+      countyInfo: counties[county],
       chatHistory,
       addToChatHistory
     }}>
