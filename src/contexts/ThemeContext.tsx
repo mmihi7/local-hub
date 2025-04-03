@@ -1,93 +1,73 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type CountyType = 'kakamega' | 'nairobi' | 'mombasa';
 
 interface CountyInfo {
-  name: CountyType;
+  id: string;
   displayName: string;
-  extent: [number, number];
-  zoom: number;
   backgroundImage: string;
-  suggestedTopics: {
-    title: string;
-    description: string;
-  }[];
+  suggestedTopics: { title: string; description: string }[];
+  coordinates: [number, number]; // [longitude, latitude]
 }
 
-export const counties: Record<CountyType, CountyInfo> = {
+const defaultCounties: Record<string, CountyInfo> = {
   kakamega: {
-    name: 'kakamega',
-    displayName: 'Kakamega',
-    extent: [34.7519, 0.2827],
-    zoom: 12,
+    id: 'kakamega',
+    displayName: 'Kakamega County',
     backgroundImage: '/kakamega-bg.jpg',
+    coordinates: [34.7523, 0.2827],
     suggestedTopics: [
-      {
-        title: "Bull Fighting",
-        description: "Traditional cultural events and locations"
+      { 
+        title: 'Bull Fighting', 
+        description: 'Learn about the traditional bull fighting culture in Kakamega' 
       },
-      {
-        title: "Kakamega Forest",
-        description: "Kenya's only tropical rainforest"
+      { 
+        title: 'Kakamega Forest', 
+        description: 'Explore the only tropical rainforest in Kenya' 
       },
-      {
-        title: "Local Businesses",
-        description: "Find shops, markets, and services"
-      },
-      {
-        title: "County Services",
-        description: "Government offices and public services"
+      { 
+        title: 'Local Cuisine', 
+        description: 'Discover traditional Western Kenya dishes' 
       }
     ]
   },
   nairobi: {
-    name: 'nairobi',
-    displayName: 'Nairobi',
-    extent: [36.8219, -1.2921],
-    zoom: 12,
+    id: 'nairobi',
+    displayName: 'Nairobi County',
     backgroundImage: '/nairobi-bg.jpg',
+    coordinates: [36.8219, -1.2921],
     suggestedTopics: [
-      {
-        title: "Tech Hub",
-        description: "Startup ecosystem and innovation centers"
+      { 
+        title: 'Nairobi National Park', 
+        description: 'The only national park within a city in the world' 
       },
-      {
-        title: "National Parks",
-        description: "Nairobi National Park and wildlife"
+      { 
+        title: 'Tech Innovation', 
+        description: 'Explore Nairobi\'s growing tech ecosystem' 
       },
-      {
-        title: "Business District",
-        description: "Commercial centers and corporate offices"
-      },
-      {
-        title: "Cultural Sites",
-        description: "Museums, galleries and historical landmarks"
+      { 
+        title: 'Urban Culture', 
+        description: 'Learn about Nairobi\'s diverse urban culture' 
       }
     ]
   },
   mombasa: {
-    name: 'mombasa',
-    displayName: 'Mombasa',
-    extent: [39.6636, -4.0547],
-    zoom: 12,
+    id: 'mombasa',
+    displayName: 'Mombasa County',
     backgroundImage: '/mombasa-bg.jpg',
+    coordinates: [39.6682, -4.0435],
     suggestedTopics: [
-      {
-        title: "Coastal Tourism",
-        description: "Beaches, resorts, and water activities"
+      { 
+        title: 'Old Town', 
+        description: 'Discover the historical architecture and culture' 
       },
-      {
-        title: "Fort Jesus",
-        description: "Historical sites and Portuguese influence"
+      { 
+        title: 'Coastal Cuisine', 
+        description: 'Explore the rich flavors of coastal Kenyan food' 
       },
-      {
-        title: "Old Town",
-        description: "Cultural heritage and architecture"
-      },
-      {
-        title: "Port and Maritime",
-        description: "Shipping, logistics and trade"
+      { 
+        title: 'Beach Activities', 
+        description: 'Learn about water sports and beach activities' 
       }
     ]
   }
@@ -119,7 +99,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     <ThemeContext.Provider value={{ 
       county, 
       setCounty, 
-      countyInfo: counties[county],
+      countyInfo: defaultCounties[county],
       chatHistory,
       addToChatHistory
     }}>

@@ -1,11 +1,45 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapPin } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+// Set the Mapbox access token
+mapboxgl.accessToken = 'pk.eyJ1IjoibW1paGkiLCJhIjoiY2x6eHdpMmIyMHhhZzJpc2ZuejJvaWZ6NCJ9.CQTSavpQG9Q_u2RRlHeRGA';
 
 const MapView = () => {
   const { countyInfo } = useTheme();
-  const [mapboxToken, setMapboxToken] = useState('');
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+
+  useEffect(() => {
+    if (!mapContainer.current) return;
+
+    // Initialize map with the county coordinates
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: countyInfo.coordinates || [36.8219, -1.2921], // Default to Nairobi if no coordinates
+      zoom: 10
+    });
+
+    // Add navigation controls
+    map.current.addControl(
+      new mapboxgl.NavigationControl(),
+      'top-right'
+    );
+
+    // Add a marker at the center
+    new mapboxgl.Marker()
+      .setLngLat(countyInfo.coordinates || [36.8219, -1.2921])
+      .addTo(map.current);
+
+    // Cleanup
+    return () => {
+      map.current?.remove();
+    };
+  }, [countyInfo.coordinates]);
 
   return (
     <div className="rounded-xl border border-border overflow-hidden bg-white/70 backdrop-blur-sm shadow-sm h-64 relative">
@@ -15,28 +49,7 @@ const MapView = () => {
           <span>{countyInfo.displayName} Map</span>
         </h3>
       </div>
-      
-      {!mapboxToken ? (
-        <div className="flex flex-col items-center justify-center h-full p-4 space-y-2">
-          <p className="text-xs text-muted-foreground text-center">
-            Enter your Mapbox public token to view the map
-          </p>
-          <input 
-            type="text"
-            placeholder="Mapbox public token"
-            className="w-full p-2 text-xs border rounded"
-            value={mapboxToken}
-            onChange={(e) => setMapboxToken(e.target.value)}
-          />
-          <p className="text-xs text-muted-foreground text-center">
-            Get your token at <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
-          </p>
-        </div>
-      ) : (
-        <div className="h-full w-full bg-muted flex items-center justify-center">
-          <p className="text-xs text-muted-foreground">Map would load here with token: {mapboxToken.slice(0, 5)}...</p>
-        </div>
-      )}
+      <div ref={mapContainer} className="w-full h-full" />
     </div>
   );
 };
