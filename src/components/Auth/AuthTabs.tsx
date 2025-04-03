@@ -12,6 +12,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 
 const AuthTabs = () => {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [activeTab, setActiveTab] = useState<string>('email');
   const { twoFactorPending, verifyTwoFactor, isLoading } = useAuth();
   const [verificationCode, setVerificationCode] = useState('');
 
@@ -53,8 +54,12 @@ const AuthTabs = () => {
     );
   }
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+
   return (
-    <Tabs defaultValue="email" className="w-full">
+    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="email">Email</TabsTrigger>
         <TabsTrigger value="phone">Phone</TabsTrigger>
