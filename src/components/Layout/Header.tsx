@@ -1,25 +1,30 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, User, SunMoon } from 'lucide-react';
+import { ChevronDown, User, SunMoon, Sidebar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
   DropdownMenu, 
   DropdownMenuTrigger, 
   DropdownMenuContent, 
-  DropdownMenuItem 
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme, counties, CountyType } from '@/contexts/ThemeContext';
 import ProfileSheet from '../Profile/ProfileSheet';
 import ProfileActionsSheet from '../Profile/ProfileActionsSheet';
 import { useAuth } from '@/contexts/AuthContext';
+import { useIsMobile } from '@/hooks/use-mobile';
 
-const Header = () => {
+const Header = ({ visiblePanels, setVisiblePanels }) => {
   const { county, setCounty, theme, toggleTheme } = useTheme();
   const { isAuthenticated } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [isActionsSheetOpen, setActionsSheetOpen] = useState(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +34,13 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const togglePanel = (panel) => {
+    setVisiblePanels(prev => ({
+      ...prev,
+      [panel]: !prev[panel]
+    }));
+  };
 
   return (
     <header
@@ -46,11 +58,11 @@ const Header = () => {
         {/* Logo and Slogan */}
         <div className="flex items-center space-x-2 text-xl font-bold">
           <span className="text-white text-3xl">LOCAL</span>
-          <span className="text-white text-lg italic">Find Anything Locally</span>
+          <span className="text-white text-lg italic hidden sm:inline">Find Anything Locally</span>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center space-x-1 text-white">
@@ -72,6 +84,51 @@ const Header = () => {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {!isMobile && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-white">
+                  <Sidebar className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Panels</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem
+                  checked={visiblePanels.map}
+                  onCheckedChange={() => togglePanel('map')}
+                >
+                  Map View
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={visiblePanels.topics}
+                  onCheckedChange={() => togglePanel('topics')}
+                >
+                  Suggested Topics
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={visiblePanels.history}
+                  onCheckedChange={() => togglePanel('history')}
+                >
+                  Chat History
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={() => {
+                    setVisiblePanels({
+                      map: true,
+                      topics: true,
+                      history: true
+                    });
+                  }}
+                  className="text-xs justify-center"
+                >
+                  Reset All Panels
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <Button variant="ghost" size="icon" className="text-white" onClick={toggleTheme}>
             <SunMoon className="h-5 w-5" />

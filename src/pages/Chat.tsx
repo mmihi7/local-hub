@@ -1,13 +1,20 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import Header from '@/components/Layout/Header';
 import ChatInterface from '@/components/Chat/ChatInterface';
 import MapView from '@/components/Chat/MapView';
 import SuggestedTopics from '@/components/Chat/SuggestedTopics';
 import ChatHistory from '@/components/Chat/ChatHistory';
 import { useTheme } from '@/contexts/ThemeContext';
+import { X } from 'lucide-react';
 
 const Chat = () => {
   const { countyInfo } = useTheme();
+  const [visiblePanels, setVisiblePanels] = useState({
+    map: true,
+    topics: true,
+    history: true
+  });
 
   // Define images for each county
   const countyImages = {
@@ -33,6 +40,17 @@ const Chat = () => {
   const images = countyImages[selectedCounty] || [];
   const randomImage = images[Math.floor(Math.random() * images.length)];
 
+  // Toggle panel visibility
+  const togglePanel = (panel) => {
+    setVisiblePanels(prev => ({
+      ...prev,
+      [panel]: !prev[panel]
+    }));
+  };
+
+  // Check if all panels are closed
+  const allPanelsClosed = !visiblePanels.map && !visiblePanels.topics && !visiblePanels.history;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -47,40 +65,62 @@ const Chat = () => {
         backgroundAttachment: 'fixed'
       }}
     >
-      <Header />
+      <Header visiblePanels={visiblePanels} setVisiblePanels={setVisiblePanels} />
       
       <main className="flex-grow pt-24 pb-8 relative z-10 overflow-y-auto">
         <div className="container mx-auto px-4 h-full">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             {/* Chat Interface */}
-            <div className="lg:col-span-2 h-full overflow-hidden">
-              <div className="flex justify-end bg-white p-1">
-                <div className="w-4 h-4 bg-blue-100 rounded-none hover:bg-blue-200 transition-colors cursor-pointer"></div>
-              </div>
+            <div className={`h-full overflow-hidden ${allPanelsClosed ? 'lg:col-span-3' : 'lg:col-span-2'}`}>
               <ChatInterface className="" />
             </div>
             
             {/* Sidebar */}
-            <div className="h-full flex flex-col gap-6 overflow-y-auto pb-4">
-              <div className="h-full overflow-hidden">
-                <div className="flex justify-end bg-white p-1">
-                  <div className="w-4 h-4 bg-blue-100 rounded-none hover:bg-blue-200 transition-colors cursor-pointer"></div>
-                </div>
-                <MapView className="" />
+            {!allPanelsClosed && (
+              <div className="h-full flex flex-col gap-6 overflow-y-auto pb-4">
+                {visiblePanels.map && (
+                  <div className="h-full overflow-hidden">
+                    <div className="flex justify-end bg-white p-1">
+                      <button 
+                        onClick={() => togglePanel('map')}
+                        className="w-5 h-5 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors rounded-sm"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <MapView className="" />
+                  </div>
+                )}
+                
+                {visiblePanels.topics && (
+                  <div className="h-full overflow-hidden">
+                    <div className="flex justify-end bg-white p-1">
+                      <button 
+                        onClick={() => togglePanel('topics')}
+                        className="w-5 h-5 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors rounded-sm"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <SuggestedTopics className="" />
+                  </div>
+                )}
+                
+                {visiblePanels.history && (
+                  <div className="h-full overflow-hidden">
+                    <div className="flex justify-end bg-white p-1">
+                      <button 
+                        onClick={() => togglePanel('history')}
+                        className="w-5 h-5 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors rounded-sm"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <ChatHistory className="" />
+                  </div>
+                )}
               </div>
-              <div className="h-full overflow-hidden">
-                <div className="flex justify-end bg-white p-1">
-                  <div className="w-4 h-4 bg-blue-100 rounded-none hover:bg-blue-200 transition-colors cursor-pointer"></div>
-                </div>
-                <SuggestedTopics className="" />
-              </div>
-              <div className="h-full overflow-hidden">
-                <div className="flex justify-end bg-white p-1">
-                  <div className="w-4 h-4 bg-blue-100 rounded-none hover:bg-blue-200 transition-colors cursor-pointer"></div>
-                </div>
-                <ChatHistory className="" />
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </main>
