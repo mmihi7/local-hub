@@ -77,8 +77,15 @@
 .content-wrapper {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+  height: 100vh; /* Fixed height at 100% viewport height */
   padding-top: 5rem;
+  overflow-y: auto;
+}
+
+/* Chat container should expand when active */
+.chat-active .content-wrapper {
+  height: auto;
+  min-height: 100vh;
 }
 
 /* Background overlay for better readability */

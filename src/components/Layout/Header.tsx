@@ -71,9 +71,8 @@ const Header = ({ visiblePanels, setVisiblePanels }) => {
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo and Slogan */}
-        <div className="flex items-center space-x-2">
-          <span className="text-white text-xl md:text-3xl font-bold">LOCAL</span>
-          <span className="text-white text-sm md:text-lg italic hidden sm:inline">Find Anything Locally</span>
+        <div className="flex items-center">
+          <span className="text-white text-sm md:text-lg italic">Find Anything Locally</span>
         </div>
 
         {/* Controls */}

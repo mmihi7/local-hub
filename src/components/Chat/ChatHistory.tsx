@@ -18,8 +18,9 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ className, onClose }) => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="h-6 w-6 hover:bg-muted rounded-full"
+          className="h-6 w-6 hover:bg-muted rounded-full panel-close-btn"
           onClick={onClose}
+          aria-label="Close panel"
         >
           <X className="h-3.5 w-3.5" />
         </Button>
