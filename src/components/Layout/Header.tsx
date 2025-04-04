@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, User, SunMoon, Sidebar } from 'lucide-react';
+import { ChevronDown, User, SunMoon, Sidebar, X, LayoutPanelLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
@@ -25,6 +25,7 @@ const Header = ({ visiblePanels, setVisiblePanels }) => {
   const [scrolled, setScrolled] = useState(false);
   const [isActionsSheetOpen, setActionsSheetOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [allPanelsClosed, setAllPanelsClosed] = useState(false);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -35,11 +36,25 @@ const Header = ({ visiblePanels, setVisiblePanels }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Check if all panels are closed
+    const areAllClosed = !visiblePanels.map && !visiblePanels.topics && !visiblePanels.history;
+    setAllPanelsClosed(areAllClosed);
+  }, [visiblePanels]);
+
   const togglePanel = (panel) => {
     setVisiblePanels(prev => ({
       ...prev,
       [panel]: !prev[panel]
     }));
+  };
+
+  const restoreAllPanels = () => {
+    setVisiblePanels({
+      map: true,
+      topics: true,
+      history: true
+    });
   };
 
   return (
@@ -56,17 +71,17 @@ const Header = ({ visiblePanels, setVisiblePanels }) => {
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo and Slogan */}
-        <div className="flex items-center space-x-2 text-xl font-bold">
-          <span className="text-white text-3xl">LOCAL</span>
-          <span className="text-white text-lg italic hidden sm:inline">Find Anything Locally</span>
+        <div className="flex items-center space-x-2">
+          <span className="text-white text-xl md:text-3xl font-bold">LOCAL</span>
+          <span className="text-white text-sm md:text-lg italic hidden sm:inline">Find Anything Locally</span>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center space-x-2 sm:space-x-4">
+        <div className="flex items-center space-x-1 sm:space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center space-x-1 text-white">
-                <span>{counties[county].displayName}</span>
+                <span className="text-sm md:text-base">{counties[county].displayName}</span>
                 <ChevronDown className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -85,50 +100,54 @@ const Header = ({ visiblePanels, setVisiblePanels }) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {!isMobile && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white">
-                  <Sidebar className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Panels</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem
-                  checked={visiblePanels.map}
-                  onCheckedChange={() => togglePanel('map')}
-                >
-                  Map View
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={visiblePanels.topics}
-                  onCheckedChange={() => togglePanel('topics')}
-                >
-                  Suggested Topics
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={visiblePanels.history}
-                  onCheckedChange={() => togglePanel('history')}
-                >
-                  Chat History
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={() => {
-                    setVisiblePanels({
-                      map: true,
-                      topics: true,
-                      history: true
-                    });
-                  }}
-                  className="text-xs justify-center"
-                >
-                  Reset All Panels
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {allPanelsClosed && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-white"
+              onClick={restoreAllPanels}
+              title="Show all panels"
+            >
+              <LayoutPanelLeft className="h-5 w-5" />
+            </Button>
           )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-white">
+                <Sidebar className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Panels</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={visiblePanels.map}
+                onCheckedChange={() => togglePanel('map')}
+              >
+                Map View
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={visiblePanels.topics}
+                onCheckedChange={() => togglePanel('topics')}
+              >
+                Suggested Topics
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={visiblePanels.history}
+                onCheckedChange={() => togglePanel('history')}
+              >
+                Chat History
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={restoreAllPanels}
+                className="text-xs justify-center"
+              >
+                Reset All Panels
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button variant="ghost" size="icon" className="text-white" onClick={toggleTheme}>
             <SunMoon className="h-5 w-5" />

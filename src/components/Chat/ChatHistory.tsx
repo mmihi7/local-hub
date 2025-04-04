@@ -1,34 +1,40 @@
+
 import React from 'react';
-import { Clock } from 'lucide-react';
+import { Clock, X } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Button } from '@/components/ui/button';
 
 interface ChatHistoryProps {
-  className?: string; // Allow className as an optional prop
+  className?: string;
+  onClose?: () => void;
 }
 
-const ChatHistory: React.FC<ChatHistoryProps> = ({ className }) => {
+const ChatHistory: React.FC<ChatHistoryProps> = ({ className, onClose }) => {
   const { chatHistory } = useTheme();
-
-  if (!chatHistory.length) {
-    return null;
-  }
-
+  
   return (
-    <div className={`border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm ${className}`}>
+    <div className={`border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm relative ${className}`}>
+      <div className="absolute top-2 right-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6 hover:bg-muted rounded-full"
+          onClick={onClose}
+        >
+          <X className="h-3.5 w-3.5" />
+        </Button>
+      </div>
       <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
         <Clock className="w-3 h-3" />
         <span>Recent Conversations</span>
       </h3>
-      <ul className="space-y-1.5">
+      <div className="space-y-1">
         {chatHistory.map((message, index) => (
-          <li 
-            key={index} 
-            className="text-xs text-foreground/80 hover:text-foreground cursor-pointer hover:underline truncate"
-          >
+          <div key={index} className="cursor-pointer hover:bg-muted/50 p-1 rounded-md text-xs">
             {message}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -1,17 +1,20 @@
+
 import React, { useEffect, useRef } from 'react';
-import { MapPin } from 'lucide-react';
+import { MapPin, X } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { Button } from '@/components/ui/button';
 
 // Set the Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoibW1paGkiLCJhIjoiY2x6eHdpMmIyMHhhZzJpc2ZuejJvaWZ6NCJ9.CQTSavpQG9Q_u2RRlHeRGA';
 
 interface MapViewProps {
-  className?: string; // Allow className as an optional prop
+  className?: string;
+  onClose?: () => void;
 }
 
-const MapView: React.FC<MapViewProps> = ({ className }) => {
+const MapView: React.FC<MapViewProps> = ({ className, onClose }) => {
   const { countyInfo } = useTheme();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -46,8 +49,15 @@ const MapView: React.FC<MapViewProps> = ({ className }) => {
 
   return (
     <div className={`border border-border overflow-hidden bg-white/70 backdrop-blur-sm shadow-sm h-96 relative ${className}`}>
-      <div className="absolute top-3 left-3">
-        <div className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600 transition-colors cursor-pointer"></div>
+      <div className="absolute top-3 right-3 z-10">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6 bg-white/50 hover:bg-white/80 rounded-full"
+          onClick={onClose}
+        >
+          <X className="h-3.5 w-3.5" />
+        </Button>
       </div>
       <div className="p-3 absolute z-10 top-0 left-0 right-0 bg-gradient-to-b from-background/80 to-transparent">
         <h3 className="text-sm font-medium flex items-center gap-1 pl-6">

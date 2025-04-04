@@ -1,16 +1,29 @@
+
 import React from 'react';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, X } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Button } from '@/components/ui/button';
 
 interface SuggestedTopicsProps {
-  className?: string; // Allow className as an optional prop
+  className?: string;
+  onClose?: () => void;
 }
 
-const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ className }) => {
+const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ className, onClose }) => {
   const { countyInfo } = useTheme();
   
   return (
-    <div className={`border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm ${className}`}>
+    <div className={`border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm relative ${className}`}>
+      <div className="absolute top-2 right-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6 hover:bg-muted rounded-full"
+          onClick={onClose}
+        >
+          <X className="h-3.5 w-3.5" />
+        </Button>
+      </div>
       <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
         <Lightbulb className="w-3 h-3" />
         <span>Suggested Topics</span>
