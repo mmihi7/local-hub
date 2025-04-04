@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Mic, Image, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,10 +10,11 @@ interface Message {
   content: string;
   sender: 'user' | 'ai';
   timestamp: Date;
+  isTyping?: boolean;
 }
 
 interface ChatInterfaceProps {
-  className?: string; // Allow className as an optional prop
+  className?: string;
 }
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
@@ -39,7 +41,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     }]);
   }, [county, countyInfo]);
 
-  // Auto-scroll to the bottom of messages
+  // Auto-scroll to bottom of messages
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -47,6 +49,20 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Typing effect for AI messages
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.sender === 'ai' && lastMessage.isTyping) {
+      const timeout = setTimeout(() => {
+        setMessages(messages.map(msg => 
+          msg.id === lastMessage.id ? { ...msg, isTyping: false } : msg
+        ));
+      }, 1500);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (inputValue.trim() === '') return;
@@ -64,18 +80,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     setInputValue('');
     setIsLoading(true);
     
-    // Simulate AI response after delay
+    // Add AI placeholder for typing effect
     setTimeout(() => {
+      const aiResponse = getAIResponse(inputValue, countyInfo.displayName);
+      
       const aiMessage: Message = {
         id: messages.length + 2,
-        content: getAIResponse(inputValue, countyInfo.displayName),
+        content: aiResponse,
         sender: 'ai',
-        timestamp: new Date()
+        timestamp: new Date(),
+        isTyping: true
       };
       
       setMessages(prev => [...prev, aiMessage]);
       setIsLoading(false);
-    }, 1500);
+    }, 500);
   };
 
   const getAIResponse = (userInput: string, county: string): string => {
@@ -111,9 +130,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
 
   return (
     <div className={`flex flex-col h-full border border-border relative bg-white/80 backdrop-blur-sm shadow-sm ${className}`}>
-      {/* Messages container */}
+      {/* Messages container - modernized */}
       <div className="flex-1 p-4 overflow-y-auto">
-        <div className="space-y-4">
+        <div className="space-y-6">
           {messages.map((message) => (
             <div 
               key={message.id}
@@ -124,17 +143,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
             >
               <div 
                 className={cn(
-                  "max-w-[80%] rounded-2xl px-4 py-2 animate-scale-in",
+                  "max-w-[80%] px-0 py-1 animate-scale-in",
                   message.sender === 'user' 
-                    ? "bg-primary/10 text-foreground rounded-tr-none"
-                    : "bg-white shadow-sm border border-gray-100 rounded-tl-none"
+                    ? "text-right"
+                    : "text-left"
                 )}
               >
-                <div>{message.content}</div>
+                <div className={cn(
+                  "text-sm",
+                  message.sender === 'user' ? "font-bold text-foreground" : "text-foreground/90"
+                )}>
+                  {message.isTyping ? (
+                    <TypewriterEffect text={message.content} />
+                  ) : (
+                    message.content
+                  )}
+                </div>
                 <div 
                   className={cn(
                     "text-xs mt-1",
-                    message.sender === 'user' ? "text-foreground/60" : "text-gray-400"
+                    message.sender === 'user' ? "text-foreground/40" : "text-foreground/40"
                   )}
                 >
                   {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -145,10 +173,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
           
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-gray-100 animate-pulse flex items-center space-x-2">
-                <div className="w-2 h-2 bg-primary/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
+              <div className="text-sm flex items-center space-x-2">
+                <div className="w-1.5 h-1.5 bg-primary/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
+                <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
               </div>
             </div>
           )}
@@ -157,7 +185,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         </div>
       </div>
 
-      {/* Input area */}
+      {/* Input area - kept mostly the same but with smaller text */}
       <div className="p-4 bg-white/70 backdrop-blur-sm border-t border-gray-100">
         <div className="flex items-center space-x-2">
           <div className="relative flex-1">
@@ -165,7 +193,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full p-3 pr-12 border border-gray-200 bg-white rounded-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none" // Changed to rounded-none
+              className="w-full p-3 pr-12 border border-gray-200 bg-white rounded-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-sm"
               placeholder="Type your message..."
               rows={1}
               style={{ minHeight: '44px', maxHeight: '120px' }}
@@ -177,7 +205,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
                 size="sm"
                 className="text-gray-400 hover:text-gray-600 rounded-full p-1 h-auto"
               >
-                <Image className="w-5 h-5" />
+                <Image className="w-4 h-4" />
               </Button>
               <Button
                 type="button"
@@ -185,21 +213,47 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
                 size="sm"
                 className="text-gray-400 hover:text-gray-600 rounded-full p-1 h-auto"
               >
-                <Mic className="w-5 h-5" />
+                <Mic className="w-4 h-4" />
               </Button>
             </div>
           </div>
           
           <Button
             onClick={handleSendMessage}
-            className="bg-primary hover:bg-primary/90 text-white h-10 w-10 rounded-none flex items-center justify-center p-0 flex-shrink-0" // Changed to rounded-none
+            className="bg-primary hover:bg-primary/90 text-white h-10 w-10 rounded-none flex items-center justify-center p-0 flex-shrink-0"
             disabled={inputValue.trim() === '' || isLoading}
           >
-            {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+            {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>
         </div>
       </div>
     </div>
+  );
+};
+
+// Create a new typewriter effect component
+const TypewriterEffect: React.FC<{ text: string }> = ({ text }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 30); // Speed of typing
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text]);
+  
+  return (
+    <span>
+      {displayedText}
+      {currentIndex < text.length && (
+        <span className="inline-block w-1 h-4 ml-0.5 bg-primary animate-pulse"></span>
+      )}
+    </span>
   );
 };
 

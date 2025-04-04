@@ -1,4 +1,3 @@
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -94,4 +93,38 @@
 
 .dark .bg-overlay {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Chat interface typing cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: currentColor;
+  margin-left: 2px;
+  animation: blink 1s infinite;
+}
+
+/* Modern chat styles */
+.modern-chat {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.modern-chat .user-message {
+  font-weight: 600;
+}
+
+.modern-chat .ai-message {
+  font-weight: 400;
+}
+
+.modern-chat .timestamp {
+  font-size: 0.7rem;
+  opacity: 0.6;
 }
