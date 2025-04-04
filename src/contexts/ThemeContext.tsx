@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type CountyType = 'kakamega' | 'nairobi' | 'mombasa';
+export type ThemeMode = 'light' | 'dark';
 
 interface CountyInfo {
   id: string;
@@ -108,8 +110,10 @@ type ThemeContextType = {
   countyInfo: CountyInfo;
   chatHistory: string[];
   addToChatHistory: (message: string) => void;
-  isLoggedIn: boolean; // Manage login state
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>; // Function to update login state
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  theme: ThemeMode;
+  toggleTheme: () => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -121,7 +125,29 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     "Where can I find local markets?",
     "How do I apply for business permits?"
   ]);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // Manage login state
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [theme, setTheme] = useState<ThemeMode>('light');
+
+  useEffect(() => {
+    // Check if user has a theme preference stored
+    const savedTheme = localStorage.getItem('theme') as ThemeMode | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      // Use system preference as fallback
+      setTheme('dark');
+    }
+  }, []);
+
+  useEffect(() => {
+    // Apply theme to document
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const addToChatHistory = (message: string) => {
     setChatHistory(prev => [...prev, message].slice(-10));
@@ -134,8 +160,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       countyInfo: counties[county],
       chatHistory,
       addToChatHistory,
-      isLoggedIn, // Provide the login state
-      setIsLoggedIn // Provide the function to update the login state
+      isLoggedIn,
+      setIsLoggedIn,
+      theme,
+      toggleTheme
     }}>
       {children}
     </ThemeContext.Provider>

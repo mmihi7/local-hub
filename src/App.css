@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,9 +6,26 @@
   text-align: center;
 }
 
+.dynamic-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.5s ease-in-out;
+}
+
 .header-background {
   background-color: rgba(0, 0, 139, 0.5); /* Dark blue with 50% opacity */
   padding: 1rem; /* Add padding for better appearance */
+}
+
+.dark .header-background {
+  background-color: rgba(17, 24, 39, 0.8); /* Dark gray with 80% opacity for dark mode */
 }
 
 .logo {
@@ -44,4 +62,36 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Dark mode styles */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  background-color: #1a1a1a;
+  color: #f5f5f5;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding-top: 5rem;
+}
+
+/* Background overlay for better readability */
+.bg-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: -1;
+}
+
+.dark .bg-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
 }

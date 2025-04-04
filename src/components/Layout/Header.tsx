@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { ChevronDown, User } from 'lucide-react';
+
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, User, SunMoon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
@@ -9,17 +10,18 @@ import {
   DropdownMenuItem 
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
-import { useTheme, counties, CountyType } from '@/contexts/ThemeContext'; // Ensure this import is present
+import { useTheme, counties, CountyType } from '@/contexts/ThemeContext';
 import ProfileSheet from '../Profile/ProfileSheet';
-import ProfileActionsSheet from '../Profile/ProfileActionsSheet'; // Import the new actions sheet
-
+import ProfileActionsSheet from '../Profile/ProfileActionsSheet';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
-  const { county, setCounty, isLoggedIn } = useTheme(); // Access isLoggedIn from context
+  const { county, setCounty, theme, toggleTheme } = useTheme();
+  const { isAuthenticated } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const [isActionsSheetOpen, setActionsSheetOpen] = useState(false); // State for actions sheet visibility
+  const [isActionsSheetOpen, setActionsSheetOpen] = useState(false);
   
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
@@ -33,10 +35,12 @@ const Header = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300 ease-in-out',
         scrolled
-          ? 'bg-white/90 backdrop-blur-md shadow-lg py-2'
+          ? theme === 'dark' 
+            ? 'bg-gray-900/90 backdrop-blur-md shadow-lg py-2' 
+            : 'bg-white/90 backdrop-blur-md shadow-lg py-2'
           : 'bg-transparent py-3'
       )}
-      style={{ backgroundColor: 'rgba(0, 0, 139, 0.5)' }} // Dark blue with 50% opacity
+      style={{ backgroundColor: theme === 'dark' ? 'rgba(17, 24, 39, 0.8)' : 'rgba(0, 0, 139, 0.5)' }}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo and Slogan */}
@@ -49,7 +53,7 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-1">
+              <Button variant="ghost" className="flex items-center space-x-1 text-white">
                 <span>{counties[county].displayName}</span>
                 <ChevronDown className="w-4 h-4" />
               </Button>
@@ -69,16 +73,20 @@ const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          <Button variant="ghost" size="icon" className="text-white" onClick={toggleTheme}>
+            <SunMoon className="h-5 w-5" />
+          </Button>
+
           <Sheet>
             <SheetTrigger asChild>
-              <Button size="sm" variant="ghost" className="rounded-full w-9 h-9 p-0" onClick={() => setActionsSheetOpen(true)}>
+              <Button size="sm" variant="ghost" className="rounded-full w-9 h-9 p-0 text-white" onClick={() => setActionsSheetOpen(true)}>
                 <User className="w-5 h-5" />
               </Button>
             </SheetTrigger>
-            {isLoggedIn ? (
-              <ProfileActionsSheet onClose={() => setActionsSheetOpen(false)} /> // Show actions sheet if logged in
+            {isAuthenticated ? (
+              <ProfileActionsSheet onClose={() => setActionsSheetOpen(false)} />
             ) : (
-              <ProfileSheet /> // Show default profile sheet if not logged in
+              <ProfileSheet />
             )}
           </Sheet>
         </div>

@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { User, X, LogOut, Settings, Shield } from 'lucide-react';
-import { SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
+import { User, LogOut, Settings, Shield } from 'lucide-react';
+import { SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AuthTabs from '../Auth/AuthTabs';
@@ -16,14 +16,9 @@ const ProfileSheet = () => {
   return (
     <SheetContent className="w-[90vw] sm:w-[400px] overflow-y-auto">
       <SheetHeader className="mb-5">
-        <div className="flex justify-between items-center">
-          <SheetTitle className="flex items-center gap-2">
-            <User className="w-5 h-5" /> Profile
-          </SheetTitle>
-          <SheetClose className="rounded-full h-8 w-8 flex items-center justify-center">
-            <X className="h-4 w-4" />
-          </SheetClose>
-        </div>
+        <SheetTitle className="flex items-center gap-2">
+          <User className="w-5 h-5" /> Profile
+        </SheetTitle>
       </SheetHeader>
       
       {isAuthenticated && user ? (
@@ -152,15 +147,37 @@ const ProfileSheet = () => {
             </TabsContent>
             
             <TabsContent value="business" className="space-y-4 mt-4">
-              <p className="text-sm text-center text-muted-foreground">
-                No business profile registered yet
-              </p>
-              <Button className="w-full">Register Business Profile</Button>
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium">Business Profile</h3>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-3">
+                    <span className="text-sm text-muted-foreground">Status</span>
+                    <span className="text-sm col-span-2">Not Registered</span>
+                  </div>
+                </div>
+                <Button className="w-full">Register Business Profile</Button>
+              </div>
+              
+              <div className="space-y-3">
+                <h3 className="text-sm font-medium">Create a Post</h3>
+                <Button variant="outline" size="sm" className="w-full">
+                  Create Post as Individual
+                </Button>
+                <Button variant="outline" size="sm" className="w-full" disabled={true}>
+                  Create Post as Business
+                </Button>
+              </div>
             </TabsContent>
           </Tabs>
 
-          <div className="pt-4 border-t">
-            <Button variant="outline" className="w-full" onClick={signOut}>
+          <div className="space-y-2 pt-4 border-t">
+            <Button variant="outline" size="sm" className="w-full">
+              Privacy Policy
+            </Button>
+            <Button variant="outline" size="sm" className="w-full">
+              Terms of Use
+            </Button>
+            <Button variant="destructive" className="w-full" onClick={signOut}>
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
             </Button>
