@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import HeroSection from '@/components/Hero/HeroSection';
@@ -9,13 +9,19 @@ import { ArrowRight, ArrowUpRight, CheckCircle2, Globe, Shield } from 'lucide-re
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
+  const [visiblePanels, setVisiblePanels] = useState({
+    map: true,
+    topics: true,
+    history: true
+  });
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header visiblePanels={visiblePanels} setVisiblePanels={setVisiblePanels} />
       
       <main className="flex-grow">
         {/* Hero Section */}

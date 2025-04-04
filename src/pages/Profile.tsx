@@ -9,6 +9,11 @@ import { cn } from '@/lib/utils';
 
 const Profile = () => {
   const [profileType, setProfileType] = useState<'individual' | 'business' | null>(null);
+  const [visiblePanels, setVisiblePanels] = useState({
+    map: true,
+    topics: true,
+    history: true
+  });
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -16,7 +21,7 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header visiblePanels={visiblePanels} setVisiblePanels={setVisiblePanels} />
       
       <main className="flex-grow pt-24 pb-16">
         <div className="container mx-auto px-4">
