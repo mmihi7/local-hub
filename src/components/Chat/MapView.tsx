@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { MapPin } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -8,7 +7,11 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Set the Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoibW1paGkiLCJhIjoiY2x6eHdpMmIyMHhhZzJpc2ZuejJvaWZ6NCJ9.CQTSavpQG9Q_u2RRlHeRGA';
 
-const MapView = () => {
+interface MapViewProps {
+  className?: string; // Allow className as an optional prop
+}
+
+const MapView: React.FC<MapViewProps> = ({ className }) => {
   const { countyInfo } = useTheme();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -42,14 +45,17 @@ const MapView = () => {
   }, [countyInfo.coordinates]);
 
   return (
-    <div className="rounded-xl border border-border overflow-hidden bg-white/70 backdrop-blur-sm shadow-sm h-96 relative">
+    <div className={`border border-border overflow-hidden bg-white/70 backdrop-blur-sm shadow-sm h-96 relative ${className}`}>
+      <div className="absolute top-3 left-3">
+        <div className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600 transition-colors cursor-pointer"></div>
+      </div>
       <div className="p-3 absolute z-10 top-0 left-0 right-0 bg-gradient-to-b from-background/80 to-transparent">
-        <h3 className="text-sm font-medium flex items-center gap-1">
+        <h3 className="text-sm font-medium flex items-center gap-1 pl-6">
           <MapPin className="w-3 h-3 text-destructive" />
-          <span>{countyInfo.displayName} Map</span>
+          {countyInfo.displayName}
         </h3>
       </div>
-      <div ref={mapContainer} className="w-full h-full" />
+      <div ref={mapContainer} className="w-full h-full absolute top-0 left-0" />
     </div>
   );
 };

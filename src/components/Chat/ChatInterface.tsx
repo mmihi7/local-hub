@@ -11,7 +11,11 @@ interface Message {
   timestamp: Date;
 }
 
-const ChatInterface = () => {
+interface ChatInterfaceProps {
+  className?: string; // Allow className as an optional prop
+}
+
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const { county, countyInfo, addToChatHistory } = useTheme();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -106,7 +110,7 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="flex flex-col h-full rounded-xl border border-border relative bg-white/50 backdrop-blur-sm shadow-sm">
+    <div className={`flex flex-col h-full border border-border relative bg-white/80 backdrop-blur-sm shadow-sm ${className}`}>
       {/* Messages container */}
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-4">
@@ -161,7 +165,7 @@ const ChatInterface = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full p-3 pr-12 border border-gray-200 bg-white rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              className="w-full p-3 pr-12 border border-gray-200 bg-white rounded-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none" // Changed to rounded-none
               placeholder="Type your message..."
               rows={1}
               style={{ minHeight: '44px', maxHeight: '120px' }}
@@ -188,7 +192,7 @@ const ChatInterface = () => {
           
           <Button
             onClick={handleSendMessage}
-            className="bg-primary hover:bg-primary/90 text-white h-10 w-10 rounded-full flex items-center justify-center p-0 flex-shrink-0"
+            className="bg-primary hover:bg-primary/90 text-white h-10 w-10 rounded-none flex items-center justify-center p-0 flex-shrink-0" // Changed to rounded-none
             disabled={inputValue.trim() === '' || isLoading}
           >
             {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}

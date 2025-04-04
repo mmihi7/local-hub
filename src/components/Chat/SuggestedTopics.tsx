@@ -1,13 +1,16 @@
-
 import React from 'react';
 import { Lightbulb } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
-const SuggestedTopics = () => {
+interface SuggestedTopicsProps {
+  className?: string; // Allow className as an optional prop
+}
+
+const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ className }) => {
   const { countyInfo } = useTheme();
   
   return (
-    <div className="rounded-xl border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm">
+    <div className={`border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm ${className}`}>
       <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
         <Lightbulb className="w-3 h-3" />
         <span>Suggested Topics</span>

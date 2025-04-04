@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type CountyType = 'kakamega' | 'nairobi' | 'mombasa';
@@ -9,6 +8,7 @@ interface CountyInfo {
   backgroundImage: string;
   suggestedTopics: { title: string; description: string }[];
   coordinates: [number, number]; // [longitude, latitude]
+  name: string; 
 }
 
 // Export the counties object so it can be used in other components
@@ -17,19 +17,28 @@ export const counties: Record<CountyType, CountyInfo> = {
     id: 'kakamega',
     displayName: 'Kakamega County',
     backgroundImage: '/kakamega-bg.jpg',
+    name: 'kakamega',
     coordinates: [34.7523, 0.2827],
     suggestedTopics: [
       { 
-        title: 'Bull Fighting', 
-        description: 'Learn about the traditional bull fighting culture in Kakamega' 
+        title: 'Tourism Licensing', 
+        description: 'How to get a business permit for a tour guide service near Kakamega Forest?' 
       },
       { 
-        title: 'Kakamega Forest', 
-        description: 'Explore the only tropical rainforest in Kenya' 
+        title: 'Agricultural Markets', 
+        description: 'Where can I find bulk buyers for agricultural produce in Kakamega?' 
       },
       { 
-        title: 'Local Cuisine', 
-        description: 'Discover traditional Western Kenya dishes' 
+        title: 'Farming Opportunities', 
+        description: 'Best locations for starting a dairy goat farming business?' 
+      },
+      { 
+        title: 'Export Business', 
+        description: 'How to register a local handicraft export business?' 
+      },
+      { 
+        title: 'Cultural Souvenirs', 
+        description: 'Who buys traditional bull fighting memorabilia?' 
       }
     ]
   },
@@ -38,18 +47,27 @@ export const counties: Record<CountyType, CountyInfo> = {
     displayName: 'Nairobi County',
     backgroundImage: '/nairobi-bg.jpg',
     coordinates: [36.8219, -1.2921],
+    name: 'nairobi',
     suggestedTopics: [
       { 
-        title: 'Nairobi National Park', 
-        description: 'The only national park within a city in the world' 
+        title: 'Tech Startup', 
+        description: 'How to get a business permit for a tech startup in Nairobi?' 
       },
       { 
-        title: 'Tech Innovation', 
-        description: 'Explore Nairobi\'s growing tech ecosystem' 
+        title: 'IT Equipment', 
+        description: 'Where can I find wholesale computer and IT equipment?' 
       },
       { 
-        title: 'Urban Culture', 
-        description: 'Learn about Nairobi\'s diverse urban culture' 
+        title: 'Workspace Solutions', 
+        description: 'Best coworking spaces for entrepreneurs in Nairobi?' 
+      },
+      { 
+        title: 'Tourism Licensing', 
+        description: 'How to register a tour guide business for city tours?' 
+      },
+      { 
+        title: 'Tech Recruitment', 
+        description: 'Who hires software developers and IT professionals in bulk?' 
       }
     ]
   },
@@ -58,18 +76,27 @@ export const counties: Record<CountyType, CountyInfo> = {
     displayName: 'Mombasa County',
     backgroundImage: '/mombasa-bg.jpg',
     coordinates: [39.6682, -4.0435],
+    name: 'mombasa',
     suggestedTopics: [
       { 
-        title: 'Old Town', 
-        description: 'Discover the historical architecture and culture' 
+        title: 'Business Licensing', 
+        description: 'How do I get a business permit for a beachfront restaurant?' 
       },
       { 
-        title: 'Coastal Cuisine', 
-        description: 'Explore the rich flavors of coastal Kenyan food' 
+        title: 'Maritime Equipment', 
+        description: 'Where to find wholesale marine fishing equipment?' 
       },
       { 
-        title: 'Beach Activities', 
-        description: 'Learn about water sports and beach activities' 
+        title: 'Tourism Routes', 
+        description: 'Best routes for tourist boat tours from Mombasa port?' 
+      },
+      { 
+        title: 'Seafood Market', 
+        description: 'Who buys fresh seafood in bulk in Mombasa?' 
+      },
+      { 
+        title: 'Historical Tourism', 
+        description: 'How to start a tour guide business for historical sites?' 
       }
     ]
   }
@@ -81,6 +108,8 @@ type ThemeContextType = {
   countyInfo: CountyInfo;
   chatHistory: string[];
   addToChatHistory: (message: string) => void;
+  isLoggedIn: boolean; // Manage login state
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>; // Function to update login state
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -92,6 +121,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     "Where can I find local markets?",
     "How do I apply for business permits?"
   ]);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // Manage login state
 
   const addToChatHistory = (message: string) => {
     setChatHistory(prev => [...prev, message].slice(-10));
@@ -103,7 +133,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       setCounty, 
       countyInfo: counties[county],
       chatHistory,
-      addToChatHistory
+      addToChatHistory,
+      isLoggedIn, // Provide the login state
+      setIsLoggedIn // Provide the function to update the login state
     }}>
       {children}
     </ThemeContext.Provider>

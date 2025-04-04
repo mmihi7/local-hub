@@ -1,9 +1,12 @@
-
 import React from 'react';
 import { Clock } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
-const ChatHistory = () => {
+interface ChatHistoryProps {
+  className?: string; // Allow className as an optional prop
+}
+
+const ChatHistory: React.FC<ChatHistoryProps> = ({ className }) => {
   const { chatHistory } = useTheme();
 
   if (!chatHistory.length) {
@@ -11,7 +14,7 @@ const ChatHistory = () => {
   }
 
   return (
-    <div className="rounded-xl border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm">
+    <div className={`border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm ${className}`}>
       <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
         <Clock className="w-3 h-3" />
         <span>Recent Conversations</span>

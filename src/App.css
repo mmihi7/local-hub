@@ -5,6 +5,11 @@
   text-align: center;
 }
 
+.header-background {
+  background-color: rgba(0, 0, 139, 0.5); /* Dark blue with 50% opacity */
+  padding: 1rem; /* Add padding for better appearance */
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
