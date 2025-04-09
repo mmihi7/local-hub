@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, User, SunMoon, Sidebar, X, LayoutPanelLeft } from 'lucide-react';
+import { ChevronDown, User, SunMoon, Sidebar, X, LayoutPanelLeft, MapPin, MessageSquare, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
@@ -38,7 +38,7 @@ const Header = ({ visiblePanels, setVisiblePanels }) => {
 
   useEffect(() => {
     // Check if all panels are closed
-    const areAllClosed = !visiblePanels.map && !visiblePanels.topics && !visiblePanels.history;
+    const areAllClosed = !visiblePanels.topics && !visiblePanels.history;
     setAllPanelsClosed(areAllClosed);
   }, [visiblePanels]);
 
@@ -124,18 +124,22 @@ const Header = ({ visiblePanels, setVisiblePanels }) => {
                 checked={visiblePanels.map}
                 onCheckedChange={() => togglePanel('map')}
               >
+                <MapPin className="h-4 w-4 mr-2" />
                 Map View
               </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={visiblePanels.topics}
                 onCheckedChange={() => togglePanel('topics')}
               >
+                <MessageSquare className="h-4 w-4 mr-2" />
                 Suggested Topics
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 checked={visiblePanels.history}
                 onCheckedChange={() => togglePanel('history')}
               >
+                <Clock className="h-4 w-4 mr-2" />
                 Chat History
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />

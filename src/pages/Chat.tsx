@@ -7,6 +7,7 @@ import MapView from '@/components/Chat/MapView';
 import SuggestedTopics from '@/components/Chat/SuggestedTopics';
 import ChatHistory from '@/components/Chat/ChatHistory';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ResizablePanelGroup, ResizablePanel } from '@/components/ui/resizable';
 
 const Chat = () => {
   const [visiblePanels, setVisiblePanels] = useState({
@@ -23,7 +24,7 @@ const Chat = () => {
     // On mobile, start with only the main chat interface visible
     if (isMobile) {
       setVisiblePanels({
-        map: false,
+        map: true,
         topics: true,
         history: false
       });
@@ -37,28 +38,33 @@ const Chat = () => {
     }));
   };
 
-  const areAllPanelsClosed = !visiblePanels.map && !visiblePanels.topics && !visiblePanels.history;
+  const areAllPanelsClosed = !visiblePanels.topics && !visiblePanels.history;
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header visiblePanels={visiblePanels} setVisiblePanels={setVisiblePanels} />
       
-      <main className="flex-grow pt-24 pb-16">
-        <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-4">
-          {/* Main Chat Area */}
-          <div className={`w-full ${areAllPanelsClosed ? 'lg:w-full' : 'lg:w-2/3'} transition-all duration-300`}>
+      <main className="flex-grow pt-24 pb-16 flex flex-col">
+        {/* Map View - Full Width at Top */}
+        {visiblePanels.map && (
+          <div className="w-full h-[300px] mb-4 px-4">
+            <MapView 
+              className="h-full"
+              onClose={() => togglePanel('map')}
+            />
+          </div>
+        )}
+        
+        {/* Two Column Layout Below Map */}
+        <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-4 flex-grow">
+          {/* Chat Interface Column - 60% width when panels visible */}
+          <div className={`w-full ${areAllPanelsClosed ? 'lg:w-full' : 'lg:w-[60%]'} transition-all duration-300`}>
             <ChatInterface />
           </div>
           
-          {/* Side Panel Container */}
+          {/* Right Column - Topics and History */}
           {!areAllPanelsClosed && (
-            <div className="w-full lg:w-1/3 space-y-4">
-              {visiblePanels.map && (
-                <MapView 
-                  onClose={() => togglePanel('map')}
-                />
-              )}
-              
+            <div className="w-full lg:w-[40%] space-y-4">
               {visiblePanels.topics && (
                 <SuggestedTopics 
                   onClose={() => togglePanel('topics')}

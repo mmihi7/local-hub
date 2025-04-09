@@ -167,3 +167,22 @@
 .panel-close-btn:hover {
   opacity: 1;
 }
+
+/* Fixed height for map container */
+.map-container {
+  height: 300px;
+  width: 100%;
+}
+
+/* Make right panels take full height in column */
+.right-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .right-panels > div {
+    flex: 1;
+  }
+}
