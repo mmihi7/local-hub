@@ -13,27 +13,28 @@ const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ className, onClose })
   const { countyInfo } = useTheme();
   
   return (
-    <div className={`border border-border p-4 bg-white/70 backdrop-blur-sm shadow-sm relative ${className}`}>
-      <div className="absolute top-2 right-2">
+    <div className={`rounded-md border border-border bg-white dark:bg-gray-800 shadow-sm relative overflow-hidden ${className}`}>
+      <div className="flex items-center justify-between p-3 bg-muted/30 dark:bg-gray-700 border-b border-border">
+        <h3 className="text-sm font-medium flex items-center gap-2">
+          <Lightbulb className="w-4 h-4 text-primary" />
+          <span>Suggested Topics</span>
+        </h3>
         <Button 
           variant="ghost" 
           size="icon" 
-          className="h-6 w-6 hover:bg-muted rounded-full panel-close-btn"
+          className="h-7 w-7 rounded-full hover:bg-muted"
           onClick={onClose}
           aria-label="Close panel"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-4 w-4" />
         </Button>
       </div>
-      <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
-        <Lightbulb className="w-3 h-3" />
-        <span>Suggested Topics</span>
-      </h3>
-      <div className="space-y-2">
+      
+      <div className="p-4 space-y-3 max-h-[calc(100vh-400px)] overflow-y-auto">
         {countyInfo.suggestedTopics.map((topic, index) => (
-          <div key={index} className="cursor-pointer group">
-            <h4 className="text-xs font-medium group-hover:text-primary">{topic.title}</h4>
-            <p className="text-xs text-muted-foreground">{topic.description}</p>
+          <div key={index} className="p-3 hover:bg-muted/50 rounded-md cursor-pointer transition-colors group">
+            <h4 className="text-sm font-medium mb-1 group-hover:text-primary">{topic.title}</h4>
+            <p className="text-sm text-muted-foreground">{topic.description}</p>
           </div>
         ))}
       </div>

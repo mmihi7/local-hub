@@ -44,7 +44,7 @@ const Chat = () => {
     <div className="flex flex-col min-h-screen">
       <Header visiblePanels={visiblePanels} setVisiblePanels={setVisiblePanels} />
       
-      <main className="flex-grow pt-24 pb-16 flex flex-col">
+      <main className="flex-grow pt-16 pb-16 flex flex-col">
         {/* Map View - Full Width at Top */}
         {visiblePanels.map && (
           <div className="w-full h-[300px] mb-4 px-4">
