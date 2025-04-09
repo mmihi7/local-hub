@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Image, RefreshCw } from 'lucide-react';
+import { Send, Mic, Image, RefreshCw, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -129,8 +129,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   };
 
   return (
-    <div className={`flex flex-col h-full border border-border relative bg-white/80 backdrop-blur-sm shadow-sm ${className}`}>
-      {/* Messages container - modernized */}
+    <div className="rounded-md border border-border bg-white dark:bg-gray-800 shadow-sm relative overflow-hidden h-full flex flex-col">
+      <div className="flex items-center justify-between p-3 bg-muted/30 dark:bg-gray-700 border-b border-border">
+        <h3 className="text-sm font-medium flex items-center gap-2">
+          <MessageSquare className="w-4 h-4 text-primary" />
+          <span>Chat</span>
+        </h3>
+      </div>
+      
+      {/* Messages container */}
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-6">
           {messages.map((message) => (
@@ -143,15 +150,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
             >
               <div 
                 className={cn(
-                  "max-w-[80%] px-0 py-1 animate-scale-in",
+                  "max-w-[80%] px-3 py-2 rounded-md",
                   message.sender === 'user' 
-                    ? "text-right"
-                    : "text-left"
+                    ? "bg-primary text-white"
+                    : "bg-muted/50 text-foreground"
                 )}
               >
                 <div className={cn(
                   "text-sm",
-                  message.sender === 'user' ? "font-bold text-foreground" : "text-foreground/90"
                 )}>
                   {message.isTyping ? (
                     <TypewriterEffect text={message.content} />
@@ -162,7 +168,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
                 <div 
                   className={cn(
                     "text-xs mt-1",
-                    message.sender === 'user' ? "text-foreground/40" : "text-foreground/40"
+                    message.sender === 'user' ? "text-primary-foreground/70" : "text-foreground/40"
                   )}
                 >
                   {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -185,15 +191,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         </div>
       </div>
 
-      {/* Input area - kept mostly the same but with smaller text */}
-      <div className="p-4 bg-white/70 backdrop-blur-sm border-t border-gray-100">
+      {/* Input area */}
+      <div className="p-4 bg-muted/30 dark:bg-gray-700 border-t border-border">
         <div className="flex items-center space-x-2">
           <div className="relative flex-1">
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full p-3 pr-12 border border-gray-200 bg-white rounded-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-sm"
+              className="w-full p-3 pr-12 border border-border bg-white rounded-md focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-sm"
               placeholder="Type your message..."
               rows={1}
               style={{ minHeight: '44px', maxHeight: '120px' }}
@@ -203,7 +209,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-gray-400 hover:text-gray-600 rounded-full p-1 h-auto"
+                className="text-muted-foreground hover:text-foreground rounded-full p-1 h-auto"
               >
                 <Image className="w-4 h-4" />
               </Button>
@@ -211,7 +217,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-gray-400 hover:text-gray-600 rounded-full p-1 h-auto"
+                className="text-muted-foreground hover:text-foreground rounded-full p-1 h-auto"
               >
                 <Mic className="w-4 h-4" />
               </Button>
@@ -220,7 +226,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
           
           <Button
             onClick={handleSendMessage}
-            className="bg-primary hover:bg-primary/90 text-white h-10 w-10 rounded-none flex items-center justify-center p-0 flex-shrink-0"
+            className="bg-primary hover:bg-primary/90 text-white h-10 w-10 rounded-md flex items-center justify-center p-0 flex-shrink-0"
             disabled={inputValue.trim() === '' || isLoading}
           >
             {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
